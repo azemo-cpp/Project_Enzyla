@@ -1,1 +1,129 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lunar Site Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-icon">◉</span>
+        <div>
+          <h1>Project <span>ENZYLA</span></h1>
+          <p>LANDING SITE ASSESSMENT SYSTEM</p>
+        </div>
+      </div>
+      <div class="status"><span></span> 3D MODEL ACTIVE</div>
+    </header>
+
+    <section class="viewport">
+      <div id="globe"></div>
+
+      <div class="coordinates">
+        <span class="eyebrow">MISSION VISUALIZATION</span>
+        <h2>Surface Overview</h2>
+        <p>Drag to rotate · Scroll to zoom</p>
+        <div class="legend">
+          <span class="dot site-a"></span> SITE A
+          <span class="dot site-b"></span> SITE B
+        </div>
+      </div>
+
+      <!-- Callout cards are positioned by JavaScript -->
+      <div class="callout" id="labelA">
+        <span class="eyebrow">CANDIDATE 01</span>
+        <h3>Site Alpha</h3>
+        <p>Illustrative landing location</p>
+        <button data-site="A">INSPECT SITE ↗</button>
+      </div>
+
+      <div class="callout" id="labelB">
+        <span class="eyebrow">CANDIDATE 02</span>
+        <h3>Site Beta</h3>
+        <p>Illustrative landing location</p>
+        <button data-site="B">INSPECT SITE ↗</button>
+      </div>
+
+      <svg id="connectors" aria-hidden="true">
+        <line id="lineA"></line>
+        <line id="lineB"></line>
+      </svg>
+
+      <div class="zoom-controls">
+        <button id="zoomIn" aria-label="Zoom in">+</button>
+        <button id="zoomOut" aria-label="Zoom out">−</button>
+        <button id="resetView" aria-label="Reset view">⌂</button>
+      </div>
+
+      <div class="scale-note">SCHEMATIC GLOBAL VIEW · NOT TO SCALE</div>
+    </section>
+
+    <aside class="analysis-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="eyebrow">MISSION INTELLIGENCE</span>
+          <h2>Site Comparison</h2>
+        </div>
+        <span class="badge">DEMO DATA</span>
+      </div>
+
+      <div class="site-tabs">
+        <button class="tab active" data-site="A">01 / ALPHA</button>
+        <button class="tab" data-site="B">02 / BETA</button>
+      </div>
+
+      <div id="siteDetails">
+        <span class="eyebrow">SELECTED LOCATION</span>
+        <h3 id="siteName">Site Alpha</h3>
+        <p id="siteDescription">Illustrative candidate site for testing the analysis interface.</p>
+
+        <div class="metric-grid">
+          <div class="metric">
+            <span>LATITUDE</span>
+            <strong id="latitude">--</strong>
+          </div>
+          <div class="metric">
+            <span>LONGITUDE</span>
+            <strong id="longitude">--</strong>
+          </div>
+          <div class="metric">
+            <span>ELEVATION</span>
+            <strong id="elevation">--</strong>
+          </div>
+          <div class="metric">
+            <span>SLOPE</span>
+            <strong id="slope">--</strong>
+          </div>
+        </div>
+
+        <div class="data-note">
+          <span class="dot site-a" id="selectedDot"></span>
+          <p id="dataStatus">
+            Example values only. Replace with verified lunar datasets.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel-footer">
+        <p>DATA-DRIVEN SITE EVALUATION</p>
+        <p>NASA SPACE APPS CHALLENGE · PROTOTYPE</p>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
