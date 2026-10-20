@@ -1,63 +1,61 @@
-# Project ENZYLA
+# Project ENZYLA 🌕
 
-**Lunar Site Assessment System** — an interactive 3D Moon exploration tool built for NASA Space Apps Challenge.
+an interactive 3D moon explorer i built for the NASA Space Apps Challenge. you click on the moon, it zooms in, shows you real mission data, actual landing sites, live ISS tracking — the whole thing.
 
-## Stack
+---
 
-- **Three.js** — 3D Moon rendering with NASA CGI Moon Kit GLB model
-- **React 19** — UI layer (Navbar, HUD, Explorer, Timeline)
-- **Tailwind CSS v4** — SpaceX-inspired design system
-- **GSAP** — animations
-- **Vite** — build tool
+## what it does
 
-## Features
+- full screen 3D moon rendered in the browser, no downloads
+- click anywhere on the moon → camera zooms in smooth
+- shows real Apollo landing site info (coordinates, what they did there, how much they collected)
+- sun lighting changes based on what angle the sun actually was at each mission
+- live ISS position updating every 5 seconds (real data)
+- star field with 44,000+ stars behind the moon
+- bottom strip lets you jump between Apollo 11 through 17
 
-- Full-screen cinematic Moon with 44,000+ procedural stars
-- Click any point → smooth zoom to lunar surface
-- Real NASA Apollo landing site data (coordinates, LOLA elevation, samples, EVA duration)
-- Dynamic sun angle per site based on real mission conditions
-- ISS live tracking via wheretheiss.at API
-- Mission documentation panel with real NASA activity records
-- Site conditions dashboard (sun elevation, comm outage, lunar day phase)
+---
 
-## Apollo Sites
+## apollo sites included
 
-| Mission | Terrain | Elevation | Samples |
-|---------|---------|-----------|---------|
-| Apollo 11 | Mare Tranquillitatis | −2,376 m | 21.5 kg |
-| Apollo 12 | Oceanus Procellarum | −2,568 m | 34.3 kg |
-| Apollo 14 | Fra Mauro | −2,471 m | 42.3 kg |
+| mission | where | elevation | samples brought back |
+|---------|-------|-----------|----------------------|
+| Apollo 11 | Sea of Tranquility | −2,376 m | 21.5 kg |
+| Apollo 12 | Ocean of Storms | −2,568 m | 34.3 kg |
+| Apollo 14 | Fra Mauro Highlands | −2,471 m | 42.3 kg |
 | Apollo 15 | Hadley–Apennine | +3,320 m | 77.3 kg |
 | Apollo 16 | Descartes Highlands | +2,115 m | 95.7 kg |
-| Apollo 17 | Taurus-Littrow | +1,975 m | 110.5 kg |
+| Apollo 17 | Taurus-Littrow Valley | +1,975 m | 110.5 kg |
 
-## Run
+---
+
+## run it locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Data Sources
+then open `http://localhost:5173`
 
-- NASA Lunar Reconnaissance Orbiter / LOLA elevation data
-- NASA Apollo Mission Planning Documents
-- NASA CGI Moon Kit (public domain)
-- Solar System Scope star map (CC-BY-4.0)
-- ISS position: wheretheiss.at
+---
 
-## Project Structure
+## tech
 
-```
-src/
-  main.ts          # Three.js scene — Moon, stars, zoom animation
-  main.tsx         # React entry point
-  App.tsx          # Root component
-  components/      # Navbar, HUD, MoonExplorer, SiteTimeline
-  data/            # Apollo site data (real NASA records)
-  hooks/           # useISS, useMET, useMoonPhase
-public/
-  moon.glb         # NASA CGI Moon Kit model
-  starmap.jpg      # NASA Deep Star Maps (Solar System Scope)
-  starmap-bg.jpg   # Processed background
-```
+- Three.js for the 3D moon
+- React + Tailwind for the UI
+- Vite for the build
+- NASA CGI Moon Kit (the actual 3D model NASA released)
+- Real LOLA elevation data from the Lunar Reconnaissance Orbiter
+
+---
+
+## data sources
+
+all the mission data is real — pulled from NASA mission planning docs, LOLA elevation database, and Apollo flight records. not made up.
+
+- NASA LRO / LOLA — elevation data
+- NASA History Division — mission documentation  
+- wheretheiss.at — live ISS position
+- Solar System Scope — star map texture (CC-BY-4.0)
+- NASA CGI Moon Kit — 3D model (public domain)
