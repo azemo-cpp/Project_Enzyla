@@ -1,4 +1,4 @@
-﻿import * as THREE from 'three';
+import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
@@ -6,7 +6,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
-// ─── Renderer ────────────────────────────────────────────────────────────────
+// --- Renderer ----------------------------------------------------------------
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
@@ -17,12 +17,12 @@ renderer.toneMappingExposure = 1.1;
 renderer.outputColorSpace    = THREE.SRGBColorSpace;
 document.getElementById('three-canvas')!.appendChild(renderer.domElement);
 
-// ─── Scene / Camera ───────────────────────────────────────────────────────────
+// --- Scene / Camera -----------------------------------------------------------
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.01, 10000);
 camera.position.set(0, 0.5, 5);
 
-// ─── Controls ────────────────────────────────────────────────────────────────
+// --- Controls ----------------------------------------------------------------
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping   = true;
 controls.dampingFactor   = 0.05;
@@ -32,7 +32,7 @@ controls.autoRotate      = true;
 controls.autoRotateSpeed = 0.3;
 controls.target.set(0, 0, 0);
 
-// ─── Sky sphere ───────────────────────────────────────────────────────────────
+// --- Sky sphere ---------------------------------------------------------------
 const skyMat = new THREE.ShaderMaterial({
   uniforms: { uMap: { value: null }, uLoaded: { value: false } },
   vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
@@ -50,13 +50,13 @@ const skyMat = new THREE.ShaderMaterial({
   side: THREE.BackSide, depthWrite: false,
 });
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(5000,64,32), skyMat));
-new THREE.TextureLoader().load('/starmap_bg.jpg',(tex)=>{
+new THREE.TextureLoader().load('/starmap-bg.jpg',(tex)=>{
   tex.colorSpace=THREE.SRGBColorSpace;
   skyMat.uniforms.uMap.value=tex;
   skyMat.uniforms.uLoaded.value=true;
 });
 
-// ─── Lighting — 21hrs.space style: harsh single sun, no fill ─────────────────
+// --- Lighting � 21hrs.space style: harsh single sun, no fill -----------------
 // Real lunar lighting: Sun is the only light source in space.
 // No atmosphere = pure directional light, ink-black shadows.
 const sun = new THREE.DirectionalLight(0xFFFAF0, 5.5); // slightly warm, like solar spectrum
@@ -69,13 +69,13 @@ sun.shadow.camera.right=sun.shadow.camera.top=3;
 sun.shadow.bias=-0.0003;
 scene.add(sun);
 // Earthshine: faint cool fill from Earth's reflected light on the dark side
-// Very subtle — 21hrs.space has near-black shadows
+// Very subtle � 21hrs.space has near-black shadows
 scene.add(new THREE.AmbientLight(0x050508, 0.04)); // almost zero ambient
 
 // Real sun angles per Apollo site (degrees above horizon at landing time)
-// From NASA mission documentation — used to update sun position dynamically
+// From NASA mission documentation � used to update sun position dynamically
 const SITE_SUN_ANGLES: Record<string, { az: number; el: number }> = {
-  'Apollo 11': { az: 90,  el: 9  },  // 9° elevation, east
+  'Apollo 11': { az: 90,  el: 9  },  // 9� elevation, east
   'Apollo 12': { az: 95,  el: 8  },
   'Apollo 14': { az: 85,  el: 15 },
   'Apollo 15': { az: 100, el: 24 },
@@ -101,13 +101,13 @@ function updateSunForSite(siteName: string) {
 }
 (window as any).updateSunForSite = updateSunForSite;
 
-// ─── Star helpers ─────────────────────────────────────────────────────────────
+// --- Star helpers -------------------------------------------------------------
 function spherePt(pos:Float32Array,i:number,r:number){
   const t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1);
   pos[i*3]=r*Math.sin(p)*Math.cos(t); pos[i*3+1]=r*Math.sin(p)*Math.sin(t); pos[i*3+2]=r*Math.cos(p);
 }
 
-// ─── Layer 1: 30k micro stars (static 1px) ───────────────────────────────────
+// --- Layer 1: 30k micro stars (static 1px) -----------------------------------
 (()=>{
   const n=30000,pos=new Float32Array(n*3),col=new Float32Array(n*3);
   for(let i=0;i<n;i++){
@@ -131,7 +131,7 @@ function spherePt(pos:Float32Array,i:number,r:number){
   })));
 })();
 
-// ─── Layer 2: 12k small twinkling stars ──────────────────────────────────────
+// --- Layer 2: 12k small twinkling stars --------------------------------------
 const layer2=(()=>{
   const n=12000,pos=new Float32Array(n*3),col=new Float32Array(n*3),
         sz=new Float32Array(n),ph=new Float32Array(n),fq=new Float32Array(n);
@@ -160,7 +160,7 @@ const layer2=(()=>{
   const pts=new THREE.Points(geo,mat); scene.add(pts); return pts;
 })();
 
-// ─── Layer 3: 2k medium stars with halo ──────────────────────────────────────
+// --- Layer 3: 2k medium stars with halo --------------------------------------
 const layer3=(()=>{
   const n=2000,pos=new Float32Array(n*3),col=new Float32Array(n*3),
         sz=new Float32Array(n),ph=new Float32Array(n);
@@ -187,7 +187,7 @@ const layer3=(()=>{
   const pts=new THREE.Points(geo,mat); scene.add(pts); return pts;
 })();
 
-// ─── Layer 4: 400 bright stars with diffraction spikes ───────────────────────
+// --- Layer 4: 400 bright stars with diffraction spikes -----------------------
 const layer4=(()=>{
   const n=400,pos=new Float32Array(n*3),sz=new Float32Array(n),
         ph=new Float32Array(n),col=new Float32Array(n*3);
@@ -214,12 +214,12 @@ const layer4=(()=>{
   const pts=new THREE.Points(geo,mat); scene.add(pts); return pts;
 })();
 
-// ─── Zoom state ───────────────────────────────────────────────────────────────
+// --- Zoom state ---------------------------------------------------------------
 let moonGroup: THREE.Group|null=null;
 let isZoomed=false, isAnimating=false;
 let currentAnimFrame: number|null=null;
 
-// Zoom distance — matches 21hrs.space: close enough to see terrain, not touching surface
+// Zoom distance � matches 21hrs.space: close enough to see terrain, not touching surface
 const ZOOM_IN_DIST  = 1.45; // units from Moon center (Moon radius = 1.0, so ~0.45 above surface)
 const ZOOM_OUT_POS  = new THREE.Vector3(0, 0.5, 5);
 
@@ -252,11 +252,11 @@ function zoomTo(dir:THREE.Vector3, lm:{name:string,type:string,desc:string,lat:n
       // Constrain orbit to a small area around the zoomed point
       // so user can look around but not fly around the whole Moon
       controls.minDistance=1.2; controls.maxDistance=1.8;
-      // Lock polar angle to ±30° from current view direction
+      // Lock polar angle to �30� from current view direction
       const currentPolar = Math.acos(camera.position.clone().normalize().y);
       controls.minPolarAngle = Math.max(0.1, currentPolar - Math.PI/6);
       controls.maxPolarAngle = Math.min(Math.PI - 0.1, currentPolar + Math.PI/6);
-      // Lock azimuth to ±30° from current
+      // Lock azimuth to �30� from current
       const currentAzimuth = Math.atan2(camera.position.x, camera.position.z);
       controls.minAzimuthAngle = currentAzimuth - Math.PI/6;
       controls.maxAzimuthAngle = currentAzimuth + Math.PI/6;
@@ -282,7 +282,7 @@ const LANDMARKS = [
   {name:'Clavius',     lat:-58.40, lon:-14.36,type:'Crater',       desc:'One of the largest craters, 225 km across, southern highlands.'},
   {name:'Mare Tranquillitatis',lat:8.5,lon:31.4,type:'Mare',       desc:'Sea of Tranquility. Dark basaltic plain, Apollo 11 landing site.'},
   {name:'Mare Imbrium',lat:32.8,  lon:-15.6,  type:'Mare',         desc:'Sea of Showers. One of the largest impact basins, ~3.9 Ga.'},
-  {name:'Oceanus Procellarum',lat:2.5,lon:-46.0,type:'Mare',       desc:'Ocean of Storms. Largest lunar mare, ~2.5 million km².'},
+  {name:'Oceanus Procellarum',lat:2.5,lon:-46.0,type:'Mare',       desc:'Ocean of Storms. Largest lunar mare, ~2.5 million km�.'},
   {name:'Mare Serenitatis',lat:28.0,lon:17.5,  type:'Mare',        desc:'Sea of Serenity. Circular lava-flooded basin, near-side.'},
   {name:'Mare Crisium',lat:17.0,  lon: 59.1,  type:'Mare',         desc:'Sea of Crises. Isolated circular basin near the eastern limb.'},
   {name:'Montes Apenninus',lat:18.9,lon:3.7,  type:'Mountains',    desc:'600 km range forming the southeastern border of Mare Imbrium.'},
@@ -294,7 +294,7 @@ function zoomOut(){
   if(!isZoomed)return;
   if(currentAnimFrame !== null){ cancelAnimationFrame(currentAnimFrame); currentAnimFrame=null; }
   isAnimating=true; isZoomed=false;
-  // Release ALL constraints BEFORE animating � prevents OrbitControls fighting the animation
+  // Release ALL constraints BEFORE animating ? prevents OrbitControls fighting the animation
   controls.enabled=false;
   controls.minPolarAngle=0; controls.maxPolarAngle=Math.PI;
   controls.minAzimuthAngle=-Infinity; controls.maxAzimuthAngle=Infinity;
@@ -322,7 +322,7 @@ function zoomOut(){
   currentAnimFrame=requestAnimationFrame(tick);
 }
 
-// ─── Public API ──────────────────────────────────────────────────────────────
+// --- Public API --------------------------------------------------------------
 (window as any).zoomToSite = (lat: number, lon: number, name: string) => {
   if (!moonGroup) return;
   if (isZoomed) window.dispatchEvent(new CustomEvent('moonexit'));
@@ -339,7 +339,7 @@ function zoomOut(){
 // Also expose zoomOut directly so React can call it
 (window as any).zoomOut = () => zoomOut();
 
-// Click to zoom — works even when already zoomed (seamless re-zoom to new point)
+// Click to zoom � works even when already zoomed (seamless re-zoom to new point)
 const raycaster=new THREE.Raycaster();
 window.addEventListener('pointerdown',(e:PointerEvent)=>{
   if(e.button!==0||!moonGroup||isAnimating)return;
@@ -351,7 +351,7 @@ window.addEventListener('pointerdown',(e:PointerEvent)=>{
   if(!hits.length)return;
   const hitPt=hits[0].point.clone();
   const dir=hitPt.normalize();
-  // Find nearest landmark within 8°
+  // Find nearest landmark within 8�
   const COS8=Math.cos(8*Math.PI/180);
   let bestLm=null,bestDot=COS8;
   LANDMARKS.forEach(lm=>{
@@ -370,7 +370,7 @@ window.addEventListener('pointerdown',(e:PointerEvent)=>{
 
 window.addEventListener('dblclick',()=>{if(isZoomed&&!isAnimating)zoomOut();});
 
-// ─── Moon GLB ────────────────────────────────────────────────────────────────
+// --- Moon GLB ----------------------------------------------------------------
 new GLTFLoader().load('/moon.glb',(gltf)=>{
   const moon=gltf.scene;
   const box=new THREE.Box3().setFromObject(moon);
@@ -380,7 +380,7 @@ new GLTFLoader().load('/moon.glb',(gltf)=>{
   moon.scale.setScalar(scale);
   moon.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
 
-  // Keep GLB's own UV-mapped textures — DO NOT replace with equirectangular texture
+  // Keep GLB's own UV-mapped textures � DO NOT replace with equirectangular texture
   // Just boost normal map and roughness for more visible surface detail
   moon.traverse(child=>{
     if(!(child instanceof THREE.Mesh))return;
@@ -399,11 +399,11 @@ new GLTFLoader().load('/moon.glb',(gltf)=>{
 
   scene.add(moon);
   moonGroup=moon as THREE.Group;
-  console.log('✅ Moon loaded');
+  console.log('? Moon loaded');
 },({loaded,total})=>console.log(`Moon: ${Math.round(loaded/total*100)}%`),
-(err)=>console.error('❌ Moon:',err));
+(err)=>console.error('? Moon:',err));
 
-// ─── Post-processing ──────────────────────────────────────────────────────────
+// --- Post-processing ----------------------------------------------------------
 const composer=new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene,camera));
 composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.7,1.2,0.60));
@@ -413,7 +413,7 @@ composer.addPass(new ShaderPass({
   fragmentShader:`uniform sampler2D tDiffuse;varying vec2 vUv;void main(){vec3 x=texture2D(tDiffuse,vUv).rgb;x=(x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14);x=clamp(x,0.0,1.0);vec2 uv=vUv-0.5;x*=1.0-dot(uv,uv)*0.9;gl_FragColor=vec4(x,1.0);}`,
 }));
 
-// ─── Resize ───────────────────────────────────────────────────────────────────
+// --- Resize -------------------------------------------------------------------
 window.addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight;
   camera.updateProjectionMatrix();
@@ -421,7 +421,7 @@ window.addEventListener('resize',()=>{
   composer.setSize(innerWidth,innerHeight);
 });
 
-// ─── Animate ─────────────────────────────────────────────────────────────────
+// --- Animate -----------------------------------------------------------------
 let t=0,last=performance.now();
 function animate(){
   requestAnimationFrame(animate);
