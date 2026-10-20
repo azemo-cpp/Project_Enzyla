@@ -1,5 +1,5 @@
 
-## what it does
+
 
 - full screen 3D moon rendered in the browser, no downloads
 - click anywhere on the moon → camera zooms in smooth
