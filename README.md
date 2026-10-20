@@ -1,18 +1,13 @@
-# Project ENZYLA 🌕
-
-an interactive 3D moon explorer i built for the NASA Space Apps Challenge. you click on the moon, it zooms in, shows you real mission data, actual landing sites, live ISS tracking — the whole thing.
-
----
 
 ## what it does
 
 - full screen 3D moon rendered in the browser, no downloads
 - click anywhere on the moon → camera zooms in smooth
-- shows real Apollo landing site info (coordinates, what they did there, how much they collected)
+- shows real Apollo landing site infos (coordinates, what they did there, how much they collected)
 - sun lighting changes based on what angle the sun actually was at each mission
 - live ISS position updating every 5 seconds (real data)
 - star field with 44,000+ stars behind the moon
-- bottom strip lets you jump between Apollo 11 through 17
+- bottom tab (jump between Apollo 11 through 17) 
 
 ---
 
@@ -40,7 +35,7 @@ then open `http://localhost:5173`
 
 ---
 
-## tech
+## tech stackz
 
 - Three.js for the 3D moon
 - React + Tailwind for the UI
@@ -52,7 +47,7 @@ then open `http://localhost:5173`
 
 ## data sources
 
-all the mission data is real — pulled from NASA mission planning docs, LOLA elevation database, and Apollo flight records. not made up.
+ mission data from NASA mission planning docs, LOLA elevation database, and Apollo flight records.
 
 - NASA LRO / LOLA — elevation data
 - NASA History Division — mission documentation  
